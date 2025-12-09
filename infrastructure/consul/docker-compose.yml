@@ -1,0 +1,22 @@
+services:
+  consul:
+    image: consul:1.15
+    container_name: consul
+    ports:
+      - "8500:8500"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      - CONSUL_BIND_INTERFACE=eth0
+    command: agent -server -bootstrap -ui -client=0.0.0.0
+    volumes:
+      - consul-data:/consul/data
+    networks:
+      - microservices-network
+
+volumes:
+  consul-data:
+
+networks:
+  microservices-network:
+    driver: bridge
