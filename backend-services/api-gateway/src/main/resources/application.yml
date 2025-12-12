@@ -8,37 +8,59 @@ spring:
     config:
       enabled: false
     consul:
-      enabled: false
+      enabled: true
+      host: localhost
+      port: 8500
+      discovery:
+        enabled: true
+        hostname: localhost
+        prefer-ip-address: true
+        health-check-path: /actuator/health
+        health-check-interval: 10s
+        health-check-timeout: 60s
+        instance-id: ${spring.application.name}:${random.value}
     gateway:
       routes:
         - id: product-service
-          uri: http://localhost:8082
+          uri: lb://product-service
           predicates:
             - Path=/api/products/**
         - id: coupon-service
-          uri: http://localhost:8084
+          uri: lb://order-service
           predicates:
             - Path=/api/coupons/**
         - id: user-service
-          uri: http://localhost:8081
+          uri: lb://user-service
           predicates:
             - Path=/api/auth/**,/api/users/**,/api/user/**
         - id: cart-service
-          uri: http://localhost:8083
+          uri: lb://cart-service
           predicates:
             - Path=/api/cart/**,/api/wishlist/**
         - id: order-service
-          uri: http://localhost:8084
+          uri: lb://order-service
           predicates:
             - Path=/api/orders/**
         - id: address-service
-          uri: http://localhost:8081
+          uri: lb://user-service
           predicates:
             - Path=/api/addresses/**
         - id: delivery-service
-          uri: http://localhost:8086
+          uri: lb://delivery-service
           predicates:
             - Path=/api/delivery/**,/api/delivery-agent/**
+        - id: payment-service
+          uri: lb://payment-service
+          predicates:
+            - Path=/api/payments/**
+        - id: notification-service
+          uri: lb://notification-service
+          predicates:
+            - Path=/api/notifications/**
+        - id: analytics-service
+          uri: lb://analytics-service
+          predicates:
+            - Path=/api/analytics/**
       globalcors:
         corsConfigurations:
           '[/**]':
